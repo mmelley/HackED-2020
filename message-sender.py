@@ -1,22 +1,32 @@
-import requests
-import numpy
-import json
-from twilio.rest import Client
-import tkinter
-message = input("What would you like to send?")
-destination = "+17808686226"
-#Code snippet taken from
-# https://medium.com/quick-code/absolute-beginners-guide-to-slaying-apis-using-python-7b380dc82236
-def send_message(Message, destination):
-    #Sends a text message to specified location
-    account_sid = 'ACd2a9214e43319d6acef9351f1ce1f5f6'
-    auth_token = 'a737cee82ec01b87cd58a8592c15e99b'
-    client = Client(account_sid, auth_token)
-    #formulate the message that will be sent
-    message = client.messages.create(
-        to=destination,
-        from_="+17786538284",
-        body=Message)
-    print(message.sid)
+import base64
+from email.mime.audio import MIMEAudio
+from email.mime.base import MIMEBase
+from email.mime.image import MIMEImage
+from email.mime.multipart import MIMEMultipart
+from email.mime.text import MIMEText
+import mimetypes
+import os
+from apiclient import errors
 
-send_message(message, destination)
+# If modifying these scopes, delete the file token.pickle.
+SCOPES = ['https://www.googleapis.com/auth/gmail.readonly']
+
+def create_message(sender, to, subject, message_text):
+  """Create a message for an email.
+
+  Args:
+    sender: Email address of the sender.
+    to: Email address of the receiver.
+    subject: The subject of the email message.
+    message_text: The text of the email message.
+
+  Returns:
+    An object containing a base64url encoded email object.
+  """
+  message = MIMEText(message_text)
+  message['to'] = to
+  message['from'] = sender
+  message['subject'] = subject
+  return {'raw': base64.urlsafe_b64encode(message.as_bytes())}
+
+create_message("e.skousbol@gmail.com", "tofstie@ualberta.ca", "bitch", "bitch")
