@@ -8,6 +8,26 @@ import mimetypes
 import os
 from apiclient import errors
 
+def SendMessage(service, user_id, message):
+  """Send an email message.
+
+  Args:
+    service: Authorized Gmail API service instance.
+    user_id: User's email address. The special value "me"
+    can be used to indicate the authenticated user.
+    message: Message to be sent.
+
+  Returns:
+    Sent Message.
+  """
+  try:
+    message = (service.users().messages().send(userId=user_id, body=message)
+               .execute())
+    print('Message Id: %s' % message['id'])
+    return message
+  except errors.HttpError as error:
+    print('An error occurred: %s' % error)
+
 # If modifying these scopes, delete the file token.pickle.
 SCOPES = ['https://www.googleapis.com/auth/gmail.readonly']
 
@@ -29,4 +49,5 @@ def create_message(sender, to, subject, message_text):
   message['subject'] = subject
   return {'raw': base64.urlsafe_b64encode(message.as_bytes())}
 
-create_message("e.skousbol@gmail.com", "tofstie@ualberta.ca", "bitch", "bitch")
+message = create_message("e.skousbol@gmail.com", "tofstie@ualberta.ca", "bitch", "bitch")
+SendMessage(service, user_id, message)
